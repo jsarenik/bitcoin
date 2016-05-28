@@ -196,10 +196,11 @@ bool Lookup(const std::string& name, std::vector<CService>& vAddr, uint16_t port
 {
     if (name.empty() || !ValidAsCString(name)) {
         return false;
-    }
-    uint16_t port{portDefault};
-    std::string hostname;
-    SplitHostPort(name, port, hostname);
+    int port = portDefault;
+    std::string hostname = "";
+    SplitHostPort(std::string(pszName), port, hostname);
+    if (port < 0) // pszName didnt contain a port and no default value
+        return false;
 
     std::vector<CNetAddr> vIP;
     bool fRet = LookupIntern(hostname, vIP, nMaxSolutions, fAllowLookup, dns_lookup_function);

@@ -10,6 +10,7 @@
 #include <util/strencodings.h>
 
 #include <assert.h>
+#include <streams.h>
 
 std::string COutPoint::ToString() const
 {
@@ -78,7 +79,12 @@ uint256 CTransaction::ComputeWitnessHash() const
 }
 
 CTransaction::CTransaction(const CMutableTransaction& tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nLockTime(tx.nLockTime), hash{ComputeHash()}, m_witness_hash{ComputeWitnessHash()} {}
-CTransaction::CTransaction(CMutableTransaction&& tx) : vin(std::move(tx.vin)), vout(std::move(tx.vout)), nVersion(tx.nVersion), nLockTime(tx.nLockTime), hash{ComputeHash()}, m_witness_hash{ComputeWitnessHash()} {}
+CTransaction::CTransaction(CMutableTransaction&& tx, bool cache) : vin(std::move(tx.vin)), vout(std::move(tx.vout)), nVersion(tx.nVersion), nLockTime(tx.nLockTime), hash{ComputeHash()}, m_witness_hash{ComputeWitnessHash()} {
+    if (cache) {
+        VectorOutputStream stream(&encodedForm, SER_NETWORK, PROTOCOL_VERSION);
+        Serialize(stream);
+    }
+}
 
 CAmount CTransaction::GetValueOut() const
 {

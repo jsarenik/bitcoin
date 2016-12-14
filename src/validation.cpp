@@ -42,6 +42,8 @@
 #include <txdb.h>
 #include <txmempool.h>
 #include <uint256.h>
+#include <udpapi.h>
+#include <ui_interface.h>
 #include <undo.h>
 #include <util/check.h> // For NDEBUG compile time check
 #include <util/hasher.h>
@@ -3336,7 +3338,9 @@ bool CChainState::AcceptBlock(const std::shared_ptr<const CBlock>& pblock, Block
 
     // Header is valid/has work, merkle tree and segwit merkle tree are good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
-    if (!IsInitialBlockDownload() && m_chain.Tip() == pindex->pprev)
+    if (!IsInitialBlockDownload() && fHasMoreOrSameWork)
+        UDPRelayBlock(block); // TODO: Do this via NewPoWValidBlock!
+    if (!IsInitialBlockDownload() && chainActive.Tip() == pindex->pprev)
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
     // Write block to history file

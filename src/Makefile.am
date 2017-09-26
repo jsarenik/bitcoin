@@ -240,6 +240,10 @@ BITCOIN_CORE_H = \
   txmempool.h \
   txorphanage.h \
   txrequest.h \
+  udpapi.h \
+  udpnet.h \
+  udprelay.h \
+  ui_interface.h \
   undo.h \
   util/asmap.h \
   util/bip32.h \
@@ -388,6 +392,9 @@ libbitcoin_server_a_SOURCES = \
   txmempool.cpp \
   txorphanage.cpp \
   txrequest.cpp \
+  udpnet.cpp \
+  udprelay.cpp \
+  ui_interface.cpp \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \

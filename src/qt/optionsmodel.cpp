@@ -290,6 +290,11 @@ void OptionsModel::SetPruneTargetGB(int prune_target_gb, bool force)
     SetPruneEnabled(prune, force);
 }
 
+static const QString GetDefaultProxyAddress()
+{
+    return QString("%1:%2").arg(DEFAULT_GUI_PROXY_HOST).arg(DEFAULT_GUI_PROXY_PORT);
+}
+
 // read QSettings values and return them
 QVariant OptionsModel::data(const QModelIndex & index, int role) const
 {

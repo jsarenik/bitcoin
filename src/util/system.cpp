@@ -1311,7 +1311,7 @@ void SetupEnvironment()
     try {
         std::locale(""); // Raises a runtime error if current locale is invalid
     } catch (const std::runtime_error&) {
-        setenv("LC_ALL", "C.UTF-8", 1);
+        setenv("LC_ALL", "C", 1);
     }
 #elif defined(WIN32)
     // Set the default input/output charset is utf-8

@@ -15,6 +15,7 @@ RUN brew install tmate
 RUN sudo apt-get -y install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3
 RUN sudo apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libsqlite3-dev
 RUN sudo rm -rf /var/lib/apt/lists/*
+RUN pyenv install
 
 # && pip install \
 # python packages

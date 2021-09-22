@@ -8,7 +8,8 @@ FROM gitpod/workspace-full
 # :-)
 
 RUN sudo apt-get update
-RUN sudo apt-get -y dist-upgrade
+# dist-upgrade is not needed and takes too long
+#RUN sudo apt-get -y dist-upgrade
 RUN sudo apt-get -y install busybox
 RUN sudo apt-get -y install build-essential libtool autotools-dev automake pkg-config bsdmainutils python3
 RUN sudo apt-get -y install libevent-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libsqlite3-dev

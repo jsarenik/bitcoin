@@ -1,2 +1,8 @@
 image:
- file: .gitpod.Dockerfile
+  file: .gitpod.Dockerfile
+tasks:
+  - command: |
+      echo export EDITOR=vi >> ~/.profile
+      echo export VISUAL=vi >> ~/.profile
+      echo export GIT_EDITOR=vi >> ~/.profile
+      pyenv install

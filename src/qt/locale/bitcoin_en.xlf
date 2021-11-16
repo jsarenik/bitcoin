@@ -2871,7 +2871,7 @@ If you are receiving this error you should request the merchant provide a BIP21 
         <context-group purpose="location"><context context-type="linenumber">1067</context></context-group>
       </trans-unit>
       <trans-unit id="_msg516">
-        <source xml:space="preserve">The network protocol this peer is connected through: IPv4, IPv6, Onion, I2P, or CJDNS.</source>
+        <source xml:space="preserve">The network protocol this peer is connected through: IPv4, IPv6, Onion, I2P, CJDNS, or Yggdrasil.</source>
         <target xml:space="preserve"></target>
         <context-group purpose="location"><context context-type="linenumber">1090</context></context-group>
       </trans-unit>

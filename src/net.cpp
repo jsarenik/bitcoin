@@ -249,7 +249,7 @@ CService MaybeFlipIPv6toCJDNSorYggdrasil(const CService& service)
         if (ret.m_addr[0] == 0xfc && IsReachable(NET_CJDNS)) {
             ret.m_net = NET_CJDNS;
         } else
-        if (ret.m_addr[0] == 0x02 && IsReachable(NET_YGGDRASIL)) {
+        if ((ret.m_addr[0] & 0xfe) == 0x02 && IsReachable(NET_YGGDRASIL)) {
             ret.m_net = NET_YGGDRASIL;
         }
     }

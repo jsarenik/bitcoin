@@ -242,7 +242,7 @@ std::optional<CAddress> GetLocalAddrForPeer(CNode *pnode)
  * @param[in] service Address to potentially convert.
  * @return a copy of `service` either unmodified or changed to CJDNS or Yggdrasil.
  */
-CService MaybeFlipIPv6toCJDNSorYggdrasil(const CService& service)
+CService MaybeFlipIPv6toAltNet(const CService& service)
 {
     CService ret{service};
     if (ret.m_net == NET_IPV6) {
@@ -259,7 +259,7 @@ CService MaybeFlipIPv6toCJDNSorYggdrasil(const CService& service)
 // learn a new local address
 bool AddLocal(const CService& addr_, int nScore)
 {
-    CService addr{MaybeFlipIPv6toCJDNSorYggdrasil(addr_)};
+    CService addr{MaybeFlipIPv6toAltNet(addr_)};
 
     if (!addr.IsRoutable())
         return false;
@@ -438,7 +438,7 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
         std::vector<CService> resolved;
         if (Lookup(pszDest, resolved,  default_port, fNameLookup && !HaveNameProxy(), 256) && !resolved.empty()) {
             const CService rnd{resolved[GetRand(resolved.size())]};
-            addrConnect = CAddress{MaybeFlipIPv6toCJDNSorYggdrasil(rnd), NODE_NONE};
+            addrConnect = CAddress{MaybeFlipIPv6toAltNet(rnd), NODE_NONE};
             if (!addrConnect.IsValid()) {
                 LogPrint(BCLog::NET, "Resolver returned invalid address %s for %s\n", addrConnect.ToString(), pszDest);
                 return nullptr;
@@ -1122,10 +1122,10 @@ void CConnman::AcceptConnection(const ListenSocket& hListenSocket) {
     if (!addr.SetSockAddr((const struct sockaddr*)&sockaddr)) {
         LogPrintf("Warning: Unknown socket family\n");
     } else {
-        addr = CAddress{MaybeFlipIPv6toCJDNSorYggdrasil(addr), NODE_NONE};
+        addr = CAddress{MaybeFlipIPv6toAltNet(addr), NODE_NONE};
     }
 
-    const CAddress addr_bind{MaybeFlipIPv6toCJDNSorYggdrasil(GetBindAddress(hSocket)), NODE_NONE};
+    const CAddress addr_bind{MaybeFlipIPv6toAltNet(GetBindAddress(hSocket)), NODE_NONE};
 
     NetPermissionFlags permissionFlags = NetPermissionFlags::None;
     hListenSocket.AddSocketPermissionFlags(permissionFlags);
@@ -2489,7 +2489,7 @@ NodeId CConnman::GetNewNodeId()
 
 bool CConnman::Bind(const CService& addr_, unsigned int flags, NetPermissionFlags permissions)
 {
-    const CService addr{MaybeFlipIPv6toCJDNSorYggdrasil(addr_)};
+    const CService addr{MaybeFlipIPv6toAltNet(addr_)};
 
     if (!(flags & BF_EXPLICIT) && !IsReachable(addr)) {
         return false;

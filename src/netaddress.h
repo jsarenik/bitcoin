@@ -565,7 +565,7 @@ public:
     }
 
     friend class CServiceHash;
-    friend CService MaybeFlipIPv6toCJDNSorYggdrasil(const CService& service);
+    friend CService MaybeFlipIPv6toAltNet(const CService& service);
 };
 
 class CServiceHash

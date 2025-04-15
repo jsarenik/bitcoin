@@ -861,10 +861,12 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     // Custom 83-byte TxoutType::NULL_DATA (standard with max_op_return_relay of 83)
     t.vout[0].scriptPubKey = CScript() << OP_RETURN << "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38"_hex;
     BOOST_CHECK_EQUAL(83, t.vout[0].scriptPubKey.size());
-    CheckIsStandard(t, /*max_op_return_relay=*/83);
+    CheckIsStandard(t);
 
-    // Non-standard if max_op_return_relay datacarrier arg is one less
-    CheckIsNotStandard(t, "datacarrier", /*max_op_return_relay=*/82);
+    // MAX_OP_RETURN_RELAY+1-byte TxoutType::NULL_DATA (non-standard)
+    t.vout[0].scriptPubKey = CScript() << OP_RETURN << "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3800"_hex;
+    BOOST_CHECK_EQUAL(83 + 1, t.vout[0].scriptPubKey.size());
+    CheckIsStandard(t);
 
     // Data payload can be encoded in any way...
     t.vout[0].scriptPubKey = CScript() << OP_RETURN << ""_hex;
@@ -901,13 +903,6 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     t.vout[0].scriptPubKey = CScript() << OP_RETURN;
     t.vout[1].scriptPubKey = CScript() << OP_RETURN;
     CheckIsStandard(t);
-
-    t.vout[0].scriptPubKey = CScript() << OP_RETURN << "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38"_hex;
-    t.vout[1].scriptPubKey = CScript() << OP_RETURN << "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef3804678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38"_hex;
-    const auto datacarrier_size = t.vout[0].scriptPubKey.size() + t.vout[1].scriptPubKey.size();
-    CheckIsStandard(t); // Default max relay should never trigger
-    CheckIsStandard(t, /*max_op_return_relay=*/datacarrier_size);
-    CheckIsNotStandard(t, "datacarrier", /*max_op_return_relay=*/datacarrier_size-1);
 
     // Check large scriptSig (non-standard if size is >1650 bytes)
     t.vout.resize(1);

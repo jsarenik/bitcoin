@@ -72,6 +72,10 @@ public:
     friend CFeeRate operator*(const CFeeRate& f, int a) { return CFeeRate(a * f.nSatoshisPerK); }
     friend CFeeRate operator*(int a, const CFeeRate& f) { return CFeeRate(a * f.nSatoshisPerK); }
 
+    // For RBFR. A bit of a hack to have this. But does the job.
+    friend CFeeRate operator*(const CFeeRate& f, double a) { return CFeeRate(int(a * f.nSatoshisPerK)); }
+    friend CFeeRate operator*(double a, const CFeeRate& f) { return CFeeRate(int(a * f.nSatoshisPerK)); }
+
     SERIALIZE_METHODS(CFeeRate, obj) { READWRITE(obj.nSatoshisPerK); }
 };
 

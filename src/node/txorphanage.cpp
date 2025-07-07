@@ -216,7 +216,7 @@ public:
     void AddChildrenToWorkSet(const CTransaction& tx, FastRandomContext& rng) override;
     bool HaveTxToReconsider(NodeId peer) override;
     std::vector<CTransactionRef> GetChildrenFromSamePeer(const CTransactionRef& parent, NodeId nodeid) const override;
-    std::vector<OrphanTxBase> GetOrphanTransactions() const override;
+    std::vector<OrphanInfo> GetOrphanTransactions() const override;
     TxOrphanage::Usage TotalOrphanUsage() const override;
     void SanityCheck() const override;
 };
@@ -611,9 +611,9 @@ std::vector<CTransactionRef> TxOrphanageImpl::GetChildrenFromSamePeer(const CTra
     return children_found;
 }
 
-std::vector<TxOrphanage::OrphanTxBase> TxOrphanageImpl::GetOrphanTransactions() const
+std::vector<TxOrphanage::OrphanInfo> TxOrphanageImpl::GetOrphanTransactions() const
 {
-    std::vector<TxOrphanage::OrphanTxBase> result;
+    std::vector<TxOrphanage::OrphanInfo> result;
     result.reserve(m_unique_orphans);
 
     auto& index_by_wtxid = m_orphans.get<ByWtxid>();
@@ -621,7 +621,7 @@ std::vector<TxOrphanage::OrphanTxBase> TxOrphanageImpl::GetOrphanTransactions() 
     std::set<NodeId> this_orphan_announcers;
     while (it != index_by_wtxid.end()) {
         this_orphan_announcers.insert(it->m_announcer);
-        // If this is the last entry, or the next entry has a different wtxid, build a OrphanTxBase.
+        // If this is the last entry, or the next entry has a different wtxid, build a OrphanInfo.
         if (std::next(it) == index_by_wtxid.end() || std::next(it)->m_tx->GetWitnessHash() != it->m_tx->GetWitnessHash()) {
             result.emplace_back(it->m_tx, std::move(this_orphan_announcers));
             this_orphan_announcers.clear();
